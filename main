@@ -10,9 +10,15 @@ Class Instance [notbrowsable]
 	Function void Instance:ClearAllChildren()
 	Function Instance Instance:Clone()
 	Function void Instance:Destroy()
+	Function Instance Instance:FindFirstAncestor(string name)
+	Function Instance Instance:FindFirstAncestorOfClass(string className)
+	Function Instance Instance:FindFirstAncestorWhichIsA(string className)
 	Function Instance Instance:FindFirstChild(string name, bool recursive = false)
+	Function Instance Instance:FindFirstChildOfClass(string className, bool recursive = false)
+	Function Instance Instance:FindFirstChildWhichIsA(string className, bool recursive = false)
 	Function Objects Instance:GetChildren()
 	Function string Instance:GetDebugId(int scopeLength = 4) [notbrowsable] [PluginSecurity]
+	Function Objects Instance:GetDescendants()
 	Function string Instance:GetFullName()
 	Function bool Instance:IsA(string className)
 	Function bool Instance:IsAncestorOf(Instance descendant)
@@ -22,6 +28,8 @@ Class Instance [notbrowsable]
 	Function Instance Instance:clone() [deprecated]
 	Function void Instance:destroy() [deprecated]
 	Function Instance Instance:findFirstChild(string name, bool recursive = false) [deprecated]
+	Function Instance Instance:findFirstChildOfClass(string name, bool recursive = false) [deprecated]
+	Function Instance Instance:findFirstChildWhichIsA(string name, bool recursive = false) [deprecated]
 	Function Objects Instance:getChildren() [deprecated]
 	Function bool Instance:isA(string className) [deprecated]
 	Function bool Instance:isDescendantOf(Instance ancestor) [deprecated]
@@ -40,21 +48,27 @@ Class Accoutrement : Instance
 	Property Vector3 Accoutrement.AttachmentPos
 	Property Vector3 Accoutrement.AttachmentRight
 	Property Vector3 Accoutrement.AttachmentUp
-Class Hat : Accoutrement
-Class AdService : Instance
+Class Accessory : Accoutrement
+Class Hat : Accoutrement [deprecated]
+Class AdService : Instance [notCreatable]
 	Function void AdService:ShowVideoAd()
-	Event AdService.VideoAdClosed()
+	Event AdService.VideoAdClosed(bool adShown)
 Class AdvancedDragger : Instance
 Class Animation : Instance
 	Property Content Animation.AnimationId
 Class AnimationController : Instance
+	Function Array AnimationController:GetPlayingAnimationTracks()
 	Function Instance AnimationController:LoadAnimation(Instance animation)
+	Event AnimationController.AnimationPlayed(Instance animationTrack)
 Class AnimationTrack : Instance
+	Property Object AnimationTrack.Animation [readonly]
 	Property bool AnimationTrack.IsPlaying [readonly]
 	Property float AnimationTrack.Length [readonly]
 	Property AnimationPriority AnimationTrack.Priority
+	Property float AnimationTrack.TimePosition
 	Function void AnimationTrack:AdjustSpeed(float speed = 1)
 	Function void AnimationTrack:AdjustWeight(float weight = 1, float fadeTime = 0.100000001)
+	Function double AnimationTrack:GetTimeOfKeyframe(string keyframeName)
 	Function void AnimationTrack:Play(float fadeTime = 0.100000001, float weight = 1, float speed = 1)
 	Function void AnimationTrack:Stop(float fadeTime = 0.100000001)
 	Event AnimationTrack.KeyframeReached(string keyframeName)
@@ -75,7 +89,19 @@ Class AssetService : Instance
 	YieldFunction bool AssetService:RevertAsset(int placeId, int versionNumber)
 	YieldFunction void AssetService:SavePlaceAsync()
 	YieldFunction bool AssetService:SetPlacePermissions(int placeId, AccessType accessType = Everyone, Array inviteList = {})
-Class BadgeService : Instance
+Class Attachment : Instance
+	Property Vector3 Attachment.Axis [readonly]
+	Property CoordinateFrame Attachment.CFrame
+	Property Vector3 Attachment.Position
+	Property Vector3 Attachment.Rotation
+	Property Vector3 Attachment.SecondaryAxis [readonly]
+	Property Vector3 Attachment.WorldAxis [readonly]
+	Property Vector3 Attachment.WorldPosition [readonly]
+	Property Vector3 Attachment.WorldRotation [readonly]
+	Property Vector3 Attachment.WorldSecondaryAxis [readonly]
+	Function void Attachment:SetAxes(Vector3 axis0, Vector3 axis1)
+	Function void Attachment:SetAxis(Vector3 axis)
+Class BadgeService : Instance [notCreatable]
 	Function void BadgeService:SetAwardBadgeUrl(string url) [LocalUserSecurity]
 	Function void BadgeService:SetHasBadgeCooldown(int seconds) [LocalUserSecurity]
 	Function void BadgeService:SetHasBadgeUrl(string url) [LocalUserSecurity]
@@ -97,10 +123,14 @@ Class PlayerGui : BasePlayerGui [notCreatable]
 	Function void PlayerGui:SetTopbarTransparency(float transparency)
 	Event PlayerGui.TopbarTransparencyChangedSignal(float transparency)
 Class StarterGui : BasePlayerGui
-	Property bool StarterGui.ResetPlayerGuiOnSpawn [hidden]
+	Property bool StarterGui.ResetPlayerGuiOnSpawn
 	Property bool StarterGui.ShowDevelopmentGui
 	Function bool StarterGui:GetCoreGuiEnabled(CoreGuiType coreGuiType)
+	Function void StarterGui:RegisterGetCore(string parameterName, Function getFunction) [RobloxScriptSecurity]
+	Function void StarterGui:RegisterSetCore(string parameterName, Function setFunction) [RobloxScriptSecurity]
+	Function void StarterGui:SetCore(string parameterName, Variant value)
 	Function void StarterGui:SetCoreGuiEnabled(CoreGuiType coreGuiType, bool enabled)
+	YieldFunction Variant StarterGui:GetCore(string parameterName)
 	Event StarterGui.CoreGuiChangedSignal(CoreGuiType coreGuiType, bool enabled) [RobloxScriptSecurity]
 Class BinaryStringValue : Instance
 Class BindableEvent : Instance
@@ -111,31 +141,42 @@ Class BindableFunction : Instance
 	Callback Tuple BindableFunction.OnInvoke(Tuple arguments)
 Class BodyMover : Instance
 Class BodyAngularVelocity : BodyMover
+	Property Vector3 BodyAngularVelocity.AngularVelocity
+	Property Vector3 BodyAngularVelocity.MaxTorque
 	Property float BodyAngularVelocity.P
-	Property Vector3 BodyAngularVelocity.angularvelocity
-	Property Vector3 BodyAngularVelocity.maxTorque
+	Property Vector3 BodyAngularVelocity.angularvelocity [deprecated]
+	Property Vector3 BodyAngularVelocity.maxTorque [deprecated]
 Class BodyForce : BodyMover
-	Property Vector3 BodyForce.force
+	Property Vector3 BodyForce.Force
+	Property Vector3 BodyForce.force [deprecated]
 Class BodyGyro : BodyMover
+	Property CoordinateFrame BodyGyro.CFrame
 	Property float BodyGyro.D
+	Property Vector3 BodyGyro.MaxTorque
 	Property float BodyGyro.P
-	Property CoordinateFrame BodyGyro.cframe
-	Property Vector3 BodyGyro.maxTorque
+	Property CoordinateFrame BodyGyro.cframe [deprecated]
+	Property Vector3 BodyGyro.maxTorque [deprecated]
 Class BodyPosition : BodyMover
 	Property float BodyPosition.D
+	Property Vector3 BodyPosition.MaxForce
 	Property float BodyPosition.P
-	Property Vector3 BodyPosition.maxForce
-	Property Vector3 BodyPosition.position
+	Property Vector3 BodyPosition.Position
+	Property Vector3 BodyPosition.maxForce [deprecated]
+	Property Vector3 BodyPosition.position [deprecated]
 	Function Vector3 BodyPosition:GetLastForce()
-	Function Vector3 BodyPosition:lastForce()
+	Function Vector3 BodyPosition:lastForce() [deprecated]
 	Event BodyPosition.ReachedTarget()
 Class BodyThrust : BodyMover
-	Property Vector3 BodyThrust.force
-	Property Vector3 BodyThrust.location
+	Property Vector3 BodyThrust.Force
+	Property Vector3 BodyThrust.Location
+	Property Vector3 BodyThrust.force [deprecated]
+	Property Vector3 BodyThrust.location [deprecated]
 Class BodyVelocity : BodyMover
+	Property Vector3 BodyVelocity.MaxForce
 	Property float BodyVelocity.P
-	Property Vector3 BodyVelocity.maxForce
-	Property Vector3 BodyVelocity.velocity
+	Property Vector3 BodyVelocity.Velocity
+	Property Vector3 BodyVelocity.maxForce [deprecated]
+	Property Vector3 BodyVelocity.velocity [deprecated]
 	Function Vector3 BodyVelocity:GetLastForce()
 	Function Vector3 BodyVelocity:lastForce()
 Class RocketPropulsion : BodyMover
@@ -174,14 +215,17 @@ Class MeshContentProvider : CacheableContentProvider
 Class SolidModelContentProvider : CacheableContentProvider
 Class TextureContentProvider : CacheableContentProvider
 Class Camera : Instance
+	Property CoordinateFrame Camera.CFrame
 	Property Object Camera.CameraSubject
 	Property CameraType Camera.CameraType
-	Property CoordinateFrame Camera.CoordinateFrame
+	Property CoordinateFrame Camera.CoordinateFrame [deprecated] [hidden]
 	Property float Camera.FieldOfView
 	Property CoordinateFrame Camera.Focus
+	Property bool Camera.HeadLocked
 	Property Vector2 Camera.ViewportSize [readonly]
 	Property CoordinateFrame Camera.focus [deprecated]
 	Function float Camera:GetPanSpeed()
+	Function CoordinateFrame Camera:GetRenderCFrame()
 	Function float Camera:GetRoll()
 	Function float Camera:GetTiltSpeed()
 	Function void Camera:Interpolate(CoordinateFrame endPos, CoordinateFrame endFocus, float duration)
@@ -196,7 +240,7 @@ Class Camera : Instance
 	Function bool Camera:Zoom(float distance) [RobloxScriptSecurity]
 	Event Camera.FirstPersonTransition(bool entering) [RobloxPlaceSecurity]
 	Event Camera.InterpolationFinished()
-Class ChangeHistoryService : Instance
+Class ChangeHistoryService : Instance [notCreatable]
 	Function Tuple ChangeHistoryService:GetCanRedo() [PluginSecurity]
 	Function Tuple ChangeHistoryService:GetCanUndo() [PluginSecurity]
 	Function void ChangeHistoryService:Redo() [PluginSecurity]
@@ -226,7 +270,7 @@ Class Shirt : Clothing
 	Property Content Shirt.ShirtTemplate
 Class ShirtGraphic : CharacterAppearance
 	Property Content ShirtGraphic.Graphic
-Class Skin : CharacterAppearance
+Class Skin : CharacterAppearance [deprecated]
 	Property BrickColor Skin.SkinColor
 Class Chat : Instance [notCreatable]
 	Function void Chat:Chat(Instance partOrCharacter, string message, ChatColor color = Blue)
@@ -304,12 +348,12 @@ Class CookiesService : Instance
 	Function void CookiesService:DeleteCookieValue(string key) [RobloxSecurity]
 	Function string CookiesService:GetCookieValue(string key) [RobloxSecurity]
 	Function void CookiesService:SetCookieValue(string key, string value) [RobloxSecurity]
-Class CustomEvent : Instance
+Class CustomEvent : Instance [deprecated]
 	Function Objects CustomEvent:GetAttachedReceivers()
 	Function void CustomEvent:SetValue(float newValue)
 	Event CustomEvent.ReceiverConnected(Instance receiver)
 	Event CustomEvent.ReceiverDisconnected(Instance receiver)
-Class CustomEventReceiver : Instance
+Class CustomEventReceiver : Instance [deprecated]
 	Property Object CustomEventReceiver.Source
 	Function float CustomEventReceiver:GetCurrentValue()
 	Event CustomEventReceiver.EventConnected(Instance event)
@@ -327,7 +371,7 @@ Class FileMesh : DataModelMesh
 	Property Content FileMesh.TextureId
 Class SpecialMesh : FileMesh
 	Property MeshType SpecialMesh.MeshType
-Class DataStoreService : Instance
+Class DataStoreService : Instance [notCreatable]
 	Property bool DataStoreService.LegacyNamingScheme [LocalUserSecurity]
 	Function Instance DataStoreService:GetDataStore(string name, string scope = global)
 	Function Instance DataStoreService:GetGlobalDataStore()
@@ -350,11 +394,9 @@ Class DebugSettings : Instance [notbrowsable]
 	Property int DebugSettings.CpuSpeed [readonly]
 	Property int DebugSettings.DataModel [readonly]
 	Property double DebugSettings.ElapsedTime [readonly]
-	Property bool DebugSettings.EnforceInstanceCountLimit
 	Property ErrorReporting DebugSettings.ErrorReporting
 	Property string DebugSettings.GfxCard [readonly]
 	Property int DebugSettings.InstanceCount [readonly]
-	Property int DebugSettings.InstanceCountLimit
 	Property bool DebugSettings.IsFmodProfilingEnabled
 	Property bool DebugSettings.IsProfilingEnabled
 	Property bool DebugSettings.IsScriptStackTracingEnabled
@@ -416,6 +458,7 @@ Class DebuggerWatch : Instance
 	Function void DebuggerWatch:CheckSyntax()
 Class Dialog : Instance
 	Property float Dialog.ConversationDistance
+	Property string Dialog.GoodbyeDialog
 	Property bool Dialog.InUse
 	Property string Dialog.InitialPrompt
 	Property DialogPurpose Dialog.Purpose
@@ -423,6 +466,7 @@ Class Dialog : Instance
 	Function void Dialog:SignalDialogChoiceSelected(Instance player, Instance dialogChoice) [RobloxScriptSecurity]
 	Event Dialog.DialogChoiceSelected(Instance player, Instance dialogChoice)
 Class DialogChoice : Instance
+	Property string DialogChoice.GoodbyeDialog
 	Property string DialogChoice.ResponseDialog
 	Property string DialogChoice.UserDialog
 Class DoubleConstrainedValue : Instance
@@ -444,13 +488,12 @@ Class Explosion : Instance
 	Property ExplosionType Explosion.ExplosionType
 	Property Vector3 Explosion.Position
 	Event Explosion.Hit(Instance part, float distance)
-Class FWService : Instance
 Class FaceInstance : Instance [notbrowsable]
 	Property NormalId FaceInstance.Face
 Class Decal : FaceInstance
 	Property float Decal.LocalTransparencyModifier [hidden]
-	Property float Decal.Shiny
-	Property float Decal.Specular
+	Property float Decal.Shiny [deprecated]
+	Property float Decal.Specular [deprecated]
 	Property Content Decal.Texture
 	Property float Decal.Transparency
 Class Texture : Decal
@@ -461,8 +504,8 @@ Class Feature : Instance
 	Property InOut Feature.InOut
 	Property LeftRight Feature.LeftRight
 	Property TopBottom Feature.TopBottom
-Class Hole : Feature
-Class MotorFeature : Feature
+Class Hole : Feature [deprecated]
+Class MotorFeature : Feature [deprecated]
 Class Fire : Instance
 	Property Color3 Fire.Color
 	Property bool Fire.Enabled
@@ -519,16 +562,18 @@ Class GlobalDataStore : Instance
 	YieldFunction Tuple GlobalDataStore:UpdateAsync(string key, Function transformFunction)
 Class OrderedDataStore : GlobalDataStore
 	YieldFunction Instance OrderedDataStore:GetSortedAsync(bool ascending, int pagesize, Variant minValue, Variant maxValue)
-Class GroupService : Instance
+Class GroupService : Instance [notCreatable]
 	YieldFunction Instance GroupService:GetAlliesAsync(int groupId)
 	YieldFunction Instance GroupService:GetEnemiesAsync(int groupId)
 	YieldFunction Variant GroupService:GetGroupInfoAsync(int groupId)
+	YieldFunction Array GroupService:GetGroupsAsync(int userId)
 Class GuiBase : Instance
 Class GuiBase2d : GuiBase [notbrowsable]
 	Property Vector2 GuiBase2d.AbsolutePosition [readonly]
 	Property Vector2 GuiBase2d.AbsoluteSize [readonly]
 Class GuiObject : GuiBase2d [notbrowsable]
 	Property bool GuiObject.Active
+	Property Vector2 GuiObject.AnchorPoint
 	Property BrickColor GuiObject.BackgroundColor [deprecated] [hidden]
 	Property Color3 GuiObject.BackgroundColor3
 	Property float GuiObject.BackgroundTransparency
@@ -537,10 +582,10 @@ Class GuiObject : GuiBase2d [notbrowsable]
 	Property int GuiObject.BorderSizePixel
 	Property bool GuiObject.ClipsDescendants
 	Property bool GuiObject.Draggable
-	Property Object GuiObject.NextSelectionDown [RobloxScriptSecurity]
-	Property Object GuiObject.NextSelectionLeft [RobloxScriptSecurity]
-	Property Object GuiObject.NextSelectionRight [RobloxScriptSecurity]
-	Property Object GuiObject.NextSelectionUp [RobloxScriptSecurity]
+	Property Object GuiObject.NextSelectionDown
+	Property Object GuiObject.NextSelectionLeft
+	Property Object GuiObject.NextSelectionRight
+	Property Object GuiObject.NextSelectionUp
 	Property UDim2 GuiObject.Position
 	Property float GuiObject.Rotation
 	Property bool GuiObject.Selectable
@@ -563,6 +608,8 @@ Class GuiObject : GuiBase2d [notbrowsable]
 	Event GuiObject.MouseMoved(int x, int y)
 	Event GuiObject.MouseWheelBackward(int x, int y)
 	Event GuiObject.MouseWheelForward(int x, int y)
+	Event GuiObject.SelectionGained()
+	Event GuiObject.SelectionLost()
 	Event GuiObject.TouchLongPress(Array touchPositions, UserInputState state)
 	Event GuiObject.TouchPan(Array touchPositions, Vector2 totalTranslation, Vector2 velocity, UserInputState state)
 	Event GuiObject.TouchPinch(Array touchPositions, float scale, float velocity, UserInputState state)
@@ -589,15 +636,18 @@ Class ImageButton : GuiButton
 	Property Vector2 ImageButton.ImageRectOffset
 	Property Vector2 ImageButton.ImageRectSize
 	Property float ImageButton.ImageTransparency
+	Property ScaleType ImageButton.ScaleType
+	Property Rect2D ImageButton.SliceCenter
 Class TextButton : GuiButton
 	Property Font TextButton.Font
-	Property FontSize TextButton.FontSize
+	Property FontSize TextButton.FontSize [deprecated]
 	Property string TextButton.Text
 	Property Vector2 TextButton.TextBounds [readonly]
 	Property BrickColor TextButton.TextColor [deprecated] [hidden]
 	Property Color3 TextButton.TextColor3
 	Property bool TextButton.TextFits [readonly]
 	Property bool TextButton.TextScaled
+	Property float TextButton.TextSize
 	Property Color3 TextButton.TextStrokeColor3
 	Property float TextButton.TextStrokeTransparency
 	Property float TextButton.TextTransparency
@@ -612,15 +662,18 @@ Class ImageLabel : GuiLabel
 	Property Vector2 ImageLabel.ImageRectOffset
 	Property Vector2 ImageLabel.ImageRectSize
 	Property float ImageLabel.ImageTransparency
+	Property ScaleType ImageLabel.ScaleType
+	Property Rect2D ImageLabel.SliceCenter
 Class TextLabel : GuiLabel
 	Property Font TextLabel.Font
-	Property FontSize TextLabel.FontSize
+	Property FontSize TextLabel.FontSize [deprecated]
 	Property string TextLabel.Text
 	Property Vector2 TextLabel.TextBounds [readonly]
 	Property BrickColor TextLabel.TextColor [deprecated] [hidden]
 	Property Color3 TextLabel.TextColor3
 	Property bool TextLabel.TextFits [readonly]
 	Property bool TextLabel.TextScaled
+	Property float TextLabel.TextSize
 	Property Color3 TextLabel.TextStrokeColor3
 	Property float TextLabel.TextStrokeTransparency
 	Property float TextLabel.TextTransparency
@@ -643,7 +696,7 @@ Class ScrollingFrame : GuiObject
 Class TextBox : GuiObject
 	Property bool TextBox.ClearTextOnFocus
 	Property Font TextBox.Font
-	Property FontSize TextBox.FontSize
+	Property FontSize TextBox.FontSize [deprecated]
 	Property bool TextBox.MultiLine
 	Property string TextBox.Text
 	Property Vector2 TextBox.TextBounds [readonly]
@@ -651,6 +704,7 @@ Class TextBox : GuiObject
 	Property Color3 TextBox.TextColor3
 	Property bool TextBox.TextFits [readonly]
 	Property bool TextBox.TextScaled
+	Property float TextBox.TextSize
 	Property Color3 TextBox.TextStrokeColor3
 	Property float TextBox.TextStrokeTransparency
 	Property float TextBox.TextTransparency
@@ -659,8 +713,9 @@ Class TextBox : GuiObject
 	Property TextXAlignment TextBox.TextXAlignment
 	Property TextYAlignment TextBox.TextYAlignment
 	Function void TextBox:CaptureFocus()
+	Function bool TextBox:IsFocused()
 	Function void TextBox:ReleaseFocus()
-	Event TextBox.FocusLost(bool enterPressed)
+	Event TextBox.FocusLost(bool enterPressed, Instance inputThatCausedFocusLoss)
 	Event TextBox.Focused()
 Class LayerCollector : GuiBase2d
 Class BillboardGui : LayerCollector
@@ -687,7 +742,7 @@ Class GuiBase3d : GuiBase
 	Property Color3 GuiBase3d.Color3
 	Property float GuiBase3d.Transparency
 	Property bool GuiBase3d.Visible
-Class FloorWire : GuiBase3d
+Class FloorWire : GuiBase3d [deprecated]
 	Property float FloorWire.CycleOffset
 	Property Object FloorWire.From
 	Property float FloorWire.StudsBetweenTextures
@@ -724,6 +779,7 @@ Class LineHandleAdornment : HandleAdornment
 Class SphereHandleAdornment : HandleAdornment
 	Property float SphereHandleAdornment.Radius
 Class SelectionBox : PVAdornment
+	Property float SelectionBox.LineThickness
 	Property BrickColor SelectionBox.SurfaceColor [deprecated] [hidden]
 	Property Color3 SelectionBox.SurfaceColor3
 	Property float SelectionBox.SurfaceTransparency
@@ -753,11 +809,11 @@ Class SurfaceSelection : PartAdornment
 	Property NormalId SurfaceSelection.TargetSurface
 Class SelectionLasso : GuiBase3d
 	Property Object SelectionLasso.Humanoid
-Class SelectionPartLasso : SelectionLasso
+Class SelectionPartLasso : SelectionLasso [deprecated]
 	Property Object SelectionPartLasso.Part
-Class SelectionPointLasso : SelectionLasso
+Class SelectionPointLasso : SelectionLasso [deprecated]
 	Property Vector3 SelectionPointLasso.Point
-Class TextureTrail : GuiBase3d
+Class TextureTrail : GuiBase3d [deprecated]
 	Property float TextureTrail.CycleOffset [RobloxPlaceSecurity]
 	Property Object TextureTrail.From [RobloxPlaceSecurity]
 	Property float TextureTrail.StudsBetweenTextures [RobloxPlaceSecurity]
@@ -769,7 +825,7 @@ Class GuiItem : Instance
 Class Backpack : GuiItem
 Class BackpackItem : GuiItem
 	Property Content BackpackItem.TextureId
-Class HopperBin : BackpackItem
+Class HopperBin : BackpackItem [deprecated]
 	Property bool HopperBin.Active
 	Property BinType HopperBin.BinType
 	Function void HopperBin:Disable() [RobloxScriptSecurity]
@@ -785,43 +841,38 @@ Class Tool : BackpackItem
 	Property Vector3 Tool.GripRight
 	Property Vector3 Tool.GripUp
 	Property bool Tool.ManualActivationOnly
+	Property bool Tool.RequiresHandle
 	Property string Tool.ToolTip
 	Function void Tool:Activate()
 	Event Tool.Activated()
 	Event Tool.Deactivated()
 	Event Tool.Equipped(Instance mouse)
 	Event Tool.Unequipped()
-Class Flag : Tool
+Class Flag : Tool [deprecated]
 	Property BrickColor Flag.TeamColor
 Class ButtonBindingWidget : GuiItem
 Class GuiRoot : GuiItem [notCreatable]
 Class Hopper : GuiItem [deprecated]
-Class LocalBackpack : GuiItem [notCreatable]
-	Function bool LocalBackpack:GetOldSchoolBackpack() [RobloxScriptSecurity]
-	Function void LocalBackpack:SetOldSchoolBackpack(bool show) [RobloxScriptSecurity]
-Class PlayerHUD : GuiItem
 Class StarterPack : GuiItem
 Class GuiService : Instance [notCreatable]
 	Property bool GuiService.AutoSelectGuiEnabled
+	Property bool GuiService.CoreGuiNavigationEnabled
 	Property bool GuiService.GuiNavigationEnabled
-	Property bool GuiService.IsModalDialog [readonly]
-	Property bool GuiService.IsWindows [readonly]
+	Property bool GuiService.IsModalDialog [deprecated] [readonly]
+	Property bool GuiService.IsWindows [deprecated] [readonly]
+	Property bool GuiService.MenuIsOpen [readonly]
 	Property Object GuiService.SelectedCoreObject [RobloxScriptSecurity]
 	Property Object GuiService.SelectedObject
-	Property bool GuiService.ShowLegacyPlayerList [RobloxScriptSecurity]
-	Property bool GuiService.UseLuaChat [readonly]
-	Property double GuiService.Version [readonly]
 	Function void GuiService:AddCenterDialog(Instance dialog, CenterDialogType centerDialogType, Function showFunction, Function hideFunction) [RobloxScriptSecurity]
 	Function void GuiService:AddKey(string key) [RobloxScriptSecurity]
 	Function void GuiService:AddSelectionParent(string selectionName, Instance selectionParent)
 	Function void GuiService:AddSelectionTuple(string selectionName, Tuple selections)
 	Function void GuiService:AddSpecialKey(SpecialKey key) [RobloxScriptSecurity]
 	Function int GuiService:GetBrickCount() [RobloxScriptSecurity]
-	Function int GuiService:GetConnectorCount() [RobloxScriptSecurity]
+	Function Instance GuiService:GetClosestDialogToPosition(Vector3 position) [RobloxScriptSecurity]
 	Function string GuiService:GetErrorMessage() [deprecated] [RobloxScriptSecurity]
-	Function int GuiService:GetInstanceCount() [RobloxScriptSecurity]
 	Function string GuiService:GetUiMessage() [RobloxScriptSecurity]
-	Function float GuiService:GetVoxelCount() [RobloxScriptSecurity]
+	Function bool GuiService:IsTenFootInterface() [RobloxScriptSecurity]
 	Function void GuiService:OpenBrowserWindow(string url) [RobloxScriptSecurity]
 	Function void GuiService:RemoveCenterDialog(Instance dialog) [RobloxScriptSecurity]
 	Function void GuiService:RemoveKey(string key) [RobloxScriptSecurity]
@@ -829,17 +880,27 @@ Class GuiService : Instance [notCreatable]
 	Function void GuiService:RemoveSpecialKey(SpecialKey key) [RobloxScriptSecurity]
 	Function void GuiService:SetErrorMessage(string errorMessage) [deprecated] [LocalUserSecurity]
 	Function void GuiService:SetGlobalGuiInset(int x1, int y1, int x2, int y2) [RobloxScriptSecurity]
+	Function void GuiService:SetMenuIsOpen(bool open) [RobloxScriptSecurity]
 	Function void GuiService:SetUiMessage(UiMessageType msgType, string uiMessage) [LocalUserSecurity]
+	Function bool GuiService:ShowStatsBasedOnInputString(string input) [RobloxScriptSecurity]
 	Function void GuiService:ToggleFullscreen() [RobloxScriptSecurity]
 	YieldFunction Vector2 GuiService:GetScreenResolution() [RobloxScriptSecurity]
 	Event GuiService.BrowserWindowClosed() [RobloxScriptSecurity]
 	Event GuiService.ErrorMessageChanged(string newErrorMessage) [deprecated] [RobloxScriptSecurity]
 	Event GuiService.EscapeKeyPressed() [RobloxScriptSecurity]
 	Event GuiService.KeyPressed(string key, string modifiers) [RobloxScriptSecurity]
+	Event GuiService.MenuClosed()
+	Event GuiService.MenuOpened()
 	Event GuiService.ShowLeaveConfirmation() [RobloxScriptSecurity]
 	Event GuiService.SpecialKeyPressed(SpecialKey key, string modifiers) [RobloxScriptSecurity]
 	Event GuiService.UiMessageChanged(UiMessageType msgType, string newUiMessage) [RobloxScriptSecurity]
+	Callback void GuiService.SendCoreUiNotification(string title, string text) [RobloxScriptSecurity]
 Class GuidRegistryService : Instance
+Class HapticService : Instance [notCreatable]
+	Function Tuple HapticService:GetMotor(UserInputType inputType, VibrationMotor vibrationMotor)
+	Function bool HapticService:IsMotorSupported(UserInputType inputType, VibrationMotor vibrationMotor)
+	Function bool HapticService:IsVibrationSupported(UserInputType inputType)
+	Function void HapticService:SetMotor(UserInputType inputType, VibrationMotor vibrationMotor, Tuple vibrationValues)
 Class HttpRbxApiService : Instance [notCreatable]
 	YieldFunction string HttpRbxApiService:GetAsync(string apiUrlPath, bool useHttps = true, ThrottlingPriority priority = Default) [RobloxScriptSecurity]
 	YieldFunction string HttpRbxApiService:PostAsync(string apiUrlPath, string data, bool useHttps = true, ThrottlingPriority priority = Default, HttpContentType content_type = ApplicationJson) [RobloxScriptSecurity]
@@ -850,20 +911,25 @@ Class HttpService : Instance [notCreatable]
 	Function string HttpService:JSONEncode(Variant input)
 	Function string HttpService:UrlEncode(string input)
 	YieldFunction string HttpService:GetAsync(string url, bool nocache = false)
-	YieldFunction string HttpService:PostAsync(string url, string data, HttpContentType content_type = ApplicationJson)
+	YieldFunction string HttpService:PostAsync(string url, string data, HttpContentType content_type = ApplicationJson, bool compress = false)
 Class Humanoid : Instance
+	Property bool Humanoid.AutoJumpEnabled
 	Property bool Humanoid.AutoRotate
 	Property Vector3 Humanoid.CameraOffset
 	Property HumanoidDisplayDistanceType Humanoid.DisplayDistanceType
 	Property float Humanoid.Health
 	Property float Humanoid.HealthDisplayDistance
+	Property float Humanoid.HipHeight
 	Property bool Humanoid.Jump
+	Property float Humanoid.JumpPower
 	Property Object Humanoid.LeftLeg
 	Property float Humanoid.MaxHealth
+	Property float Humanoid.MaxSlopeAngle
 	Property Vector3 Humanoid.MoveDirection [readonly]
 	Property float Humanoid.NameDisplayDistance
 	Property NameOcclusion Humanoid.NameOcclusion
 	Property bool Humanoid.PlatformStand
+	Property HumanoidRigType Humanoid.RigType
 	Property Object Humanoid.RightLeg
 	Property Object Humanoid.SeatPart [readonly]
 	Property bool Humanoid.Sit
@@ -873,27 +939,31 @@ Class Humanoid : Instance
 	Property Object Humanoid.WalkToPart
 	Property Vector3 Humanoid.WalkToPoint
 	Property float Humanoid.maxHealth [deprecated]
-	Function bool Humanoid:AddCustomStatus(string status)
-	Function bool Humanoid:AddStatus(Status status = Poison)
+	Function bool Humanoid:AddCustomStatus(string status) [deprecated]
+	Function bool Humanoid:AddStatus(Status status = Poison) [deprecated]
 	Function void Humanoid:ChangeState(HumanoidStateType state = None)
 	Function void Humanoid:EquipTool(Instance tool)
+	Function Array Humanoid:GetPlayingAnimationTracks()
 	Function HumanoidStateType Humanoid:GetState()
-	Function Array Humanoid:GetStatuses()
-	Function bool Humanoid:HasCustomStatus(string status)
-	Function bool Humanoid:HasStatus(Status status = Poison)
+	Function bool Humanoid:GetStateEnabled(HumanoidStateType state)
+	Function Array Humanoid:GetStatuses() [deprecated]
+	Function bool Humanoid:HasCustomStatus(string status) [deprecated]
+	Function bool Humanoid:HasStatus(Status status = Poison) [deprecated]
 	Function Instance Humanoid:LoadAnimation(Instance animation)
 	Function void Humanoid:Move(Vector3 moveDirection, bool relativeToCamera = false)
 	Function void Humanoid:MoveTo(Vector3 location, Instance part = nil)
-	Function bool Humanoid:RemoveCustomStatus(string status)
-	Function bool Humanoid:RemoveStatus(Status status = Poison)
+	Function bool Humanoid:RemoveCustomStatus(string status) [deprecated]
+	Function bool Humanoid:RemoveStatus(Status status = Poison) [deprecated]
 	Function void Humanoid:SetClickToWalkEnabled(bool enabled) [RobloxScriptSecurity]
+	Function void Humanoid:SetStateEnabled(HumanoidStateType state, bool enabled)
 	Function void Humanoid:TakeDamage(float amount)
 	Function void Humanoid:UnequipTools()
 	Function Instance Humanoid:loadAnimation(Instance animation) [deprecated]
 	Function void Humanoid:takeDamage(float amount) [deprecated]
+	Event Humanoid.AnimationPlayed(Instance animationTrack)
 	Event Humanoid.Climbing(float speed)
-	Event Humanoid.CustomStatusAdded(string status)
-	Event Humanoid.CustomStatusRemoved(string status)
+	Event Humanoid.CustomStatusAdded(string status) [deprecated]
+	Event Humanoid.CustomStatusRemoved(string status) [deprecated]
 	Event Humanoid.Died()
 	Event Humanoid.FallingDown(bool active)
 	Event Humanoid.FreeFalling(bool active)
@@ -906,20 +976,22 @@ Class Humanoid : Instance
 	Event Humanoid.Running(float speed)
 	Event Humanoid.Seated(bool active, Instance currentSeatPart)
 	Event Humanoid.StateChanged(HumanoidStateType old, HumanoidStateType new)
-	Event Humanoid.StatusAdded(Status status)
-	Event Humanoid.StatusRemoved(Status status)
+	Event Humanoid.StateEnabledChanged(HumanoidStateType state, bool isEnabled)
+	Event Humanoid.StatusAdded(Status status) [deprecated]
+	Event Humanoid.StatusRemoved(Status status) [deprecated]
 	Event Humanoid.Strafing(bool active)
 	Event Humanoid.Swimming(float speed)
-Class InputObject : Instance
+Class InputObject : Instance [notCreatable]
 	Property Vector3 InputObject.Delta
 	Property KeyCode InputObject.KeyCode
 	Property Vector3 InputObject.Position
 	Property UserInputState InputObject.UserInputState
 	Property UserInputType InputObject.UserInputType
 Class InsertService : Instance [notCreatable]
+	Property bool InsertService.AllowInsertFreeModels
 	Function void InsertService:ApproveAssetId(int assetId) [deprecated]
 	Function void InsertService:ApproveAssetVersionId(int assetVersionId) [deprecated]
-	Function void InsertService:Insert(Instance instance)
+	Function void InsertService:Insert(Instance instance) [deprecated]
 	Function void InsertService:SetAdvancedResults(bool enable, bool user = false) [LocalUserSecurity]
 	Function void InsertService:SetAssetUrl(string assetUrl) [LocalUserSecurity]
 	Function void InsertService:SetAssetVersionUrl(string assetVersionUrl) [LocalUserSecurity]
@@ -936,6 +1008,7 @@ Class InsertService : Instance [notCreatable]
 	YieldFunction Array InsertService:GetCollection(int categoryId)
 	YieldFunction Array InsertService:GetFreeDecals(string searchText, int pageNum)
 	YieldFunction Array InsertService:GetFreeModels(string searchText, int pageNum)
+	YieldFunction int InsertService:GetLatestAssetVersionAsync(int assetId)
 	YieldFunction Array InsertService:GetUserCategories(int userId) [deprecated]
 	YieldFunction Array InsertService:GetUserSets(int userId)
 	YieldFunction Instance InsertService:LoadAsset(int assetId)
@@ -1046,7 +1119,7 @@ Class Lighting : Instance [notCreatable]
 	Function void Lighting:setMinutesAfterMidnight(double minutes) [deprecated]
 	Event Lighting.LightingChanged(bool skyboxChanged)
 Class LocalWorkspace : Instance [notCreatable]
-Class LogService : Instance
+Class LogService : Instance [notCreatable]
 	Function void LogService:ExecuteScript(string source) [RobloxScriptSecurity]
 	Function Array LogService:GetLogHistory()
 	Function void LogService:RequestServerOutput() [RobloxScriptSecurity]
@@ -1078,7 +1151,7 @@ Class ModuleScript : LuaSourceContainer
 	Property Content ModuleScript.LinkedSource
 	Property ProtectedString ModuleScript.Source [PluginSecurity]
 Class LuaWebService : Instance
-Class MarketplaceService : Instance
+Class MarketplaceService : Instance [notCreatable]
 	Function void MarketplaceService:PromptNativePurchase(Instance player, string productId) [RobloxScriptSecurity]
 	Function void MarketplaceService:PromptProductPurchase(Instance player, int productId, bool equipIfPurchased = true, CurrencyType currencyType = Default)
 	Function void MarketplaceService:PromptPurchase(Instance player, int assetId, bool equipIfPurchased = true, CurrencyType currencyType = Default)
@@ -1100,7 +1173,7 @@ Class MarketplaceService : Instance
 	Event MarketplaceService.ServerPurchaseVerification(Dictionary serverResponseTable) [RobloxScriptSecurity]
 	Event MarketplaceService.ThirdPartyPurchaseFinished(Instance player, string productId, string receipt, bool wasPurchased) [RobloxPlaceSecurity]
 	Callback ProductPurchaseDecision MarketplaceService.ProcessReceipt(Dictionary receiptInfo)
-Class Message : Instance
+Class Message : Instance [deprecated]
 	Property string Message.Text
 Class Hint : Message [deprecated]
 Class Mouse : Instance
@@ -1145,6 +1218,7 @@ Class NetworkClient : NetworkPeer [notCreatable]
 	Event NetworkClient.ConnectionRejected(string peer)
 Class NetworkServer : NetworkPeer [notCreatable]
 	Property int NetworkServer.Port [readonly]
+	Function void NetworkServer:ConfigureAsCloudEditServer() [RobloxSecurity]
 	Function int NetworkServer:GetClientCount() [LocalUserSecurity]
 	Function void NetworkServer:SetIsPlayerAuthenticationRequired(bool value) [RobloxSecurity]
 	Function void NetworkServer:Start(int port = 0, int threadSleepTime = 20) [PluginSecurity]
@@ -1222,7 +1296,7 @@ Class NetworkSettings : Instance [notbrowsable]
 	Property bool NetworkSettings.UseInstancePacketCache
 	Property bool NetworkSettings.UsePhysicsPacketCache
 	Property int NetworkSettings.WaitingForCharacterLogRate [deprecated] [hidden]
-Class NotificationService : Instance
+Class NotificationService : Instance [notCreatable]
 	Function void NotificationService:CancelAllNotification(int userId) [RobloxPlaceSecurity]
 	Function void NotificationService:CancelNotification(int userId, int alertId) [RobloxPlaceSecurity]
 	Function void NotificationService:ScheduleNotification(int userId, int alertId, string alertMsg, int minutesToFire) [RobloxPlaceSecurity]
@@ -1252,6 +1326,7 @@ Class BasePart : PVInstance [notbrowsable]
 	Property CoordinateFrame BasePart.CFrame
 	Property bool BasePart.CanCollide
 	Property Color3 BasePart.Color [deprecated]
+	Property PhysicalProperties BasePart.CustomPhysicalProperties
 	Property float BasePart.Elasticity
 	Property float BasePart.Friction
 	Property float BasePart.FrontParamA
@@ -1286,6 +1361,7 @@ Class BasePart : PVInstance [notbrowsable]
 	Property Vector3 BasePart.Velocity
 	Property BrickColor BasePart.brickColor [deprecated]
 	Function void BasePart:BreakJoints()
+	Function Tuple BasePart:CanSetNetworkOwnership()
 	Function Objects BasePart:GetConnectedParts(bool recursive = false)
 	Function float BasePart:GetMass()
 	Function Instance BasePart:GetNetworkOwner()
@@ -1310,18 +1386,18 @@ Class BasePart : PVInstance [notbrowsable]
 	Event BasePart.touched(Instance otherPart) [deprecated]
 Class CornerWedgePart : BasePart
 Class FormFactorPart : BasePart
-	Property FormFactor FormFactorPart.FormFactor
+	Property FormFactor FormFactorPart.FormFactor [hidden]
 	Property FormFactor FormFactorPart.formFactor [hidden]
 Class Part : FormFactorPart
 	Property PartType Part.Shape
-Class FlagStand : Part
+Class FlagStand : Part [deprecated]
 	Property BrickColor FlagStand.TeamColor
 	Event FlagStand.FlagCaptured(Instance player)
 Class Platform : Part
 Class Seat : Part
 	Property bool Seat.Disabled
 	Property Object Seat.Occupant [readonly]
-Class SkateboardPlatform : Part
+Class SkateboardPlatform : Part [deprecated]
 	Property Object SkateboardPlatform.Controller [readonly]
 	Property Object SkateboardPlatform.ControllingHumanoid [readonly]
 	Property int SkateboardPlatform.Steer
@@ -1336,22 +1412,27 @@ Class SkateboardPlatform : Part
 Class SpawnLocation : Part
 	Property bool SpawnLocation.AllowTeamChangeOnTouch
 	Property int SpawnLocation.Duration
+	Property bool SpawnLocation.Enabled
 	Property bool SpawnLocation.Neutral
 	Property BrickColor SpawnLocation.TeamColor
 Class WedgePart : FormFactorPart
-Class ParallelRampPart : BasePart [notbrowsable]
+Class ParallelRampPart : BasePart [notbrowsable] [deprecated]
 Class PartOperation : BasePart
 	Property bool PartOperation.UsePartColor
 Class NegateOperation : PartOperation
 Class UnionOperation : PartOperation
-Class PrismPart : BasePart [notbrowsable]
+Class PrismPart : BasePart [notbrowsable] [deprecated]
 	Property PrismSides PrismPart.Sides
-Class PyramidPart : BasePart [notbrowsable]
+Class PyramidPart : BasePart [notbrowsable] [deprecated]
 	Property PyramidSides PyramidPart.Sides
-Class RightAngleRampPart : BasePart [notbrowsable]
+Class RightAngleRampPart : BasePart [notbrowsable] [deprecated]
 Class Terrain : BasePart [notCreatable]
 	Property bool Terrain.IsSmooth [readonly]
 	Property Region3int16 Terrain.MaxExtents [readonly]
+	Property Color3 Terrain.WaterColor
+	Property float Terrain.WaterTransparency
+	Property float Terrain.WaterWaveSize
+	Property float Terrain.WaterWaveSpeed
 	Function bool Terrain:AutowedgeCell(int x, int y, int z)
 	Function void Terrain:AutowedgeCells(Region3int16 region)
 	Function Vector3 Terrain:CellCenterToWorld(int x, int y, int z)
@@ -1405,6 +1486,7 @@ Class Model : PVInstance
 	Function void Model:moveTo(Vector3 location) [deprecated]
 Class RootInstance : Model [notbrowsable]
 Class Workspace : RootInstance
+	Property bool Workspace.AllowThirdPartySales
 	Property Object Workspace.CurrentCamera
 	Property double Workspace.DistributedGameTime
 	Property bool Workspace.FilteringEnabled
@@ -1417,31 +1499,40 @@ Class Workspace : RootInstance
 	Function Objects Workspace:FindPartsInRegion3(Region3 region, Instance ignoreDescendentsInstance = nil, int maxParts = 20)
 	Function Objects Workspace:FindPartsInRegion3WithIgnoreList(Region3 region, Objects ignoreDescendentsTable, int maxParts = 20)
 	Function int Workspace:GetNumAwakeParts()
+	Function bool Workspace:GetPhysicsAnalyzerBreakOnIssue() [PluginSecurity]
+	Function Objects Workspace:GetPhysicsAnalyzerIssue(int index) [PluginSecurity]
 	Function int Workspace:GetPhysicsThrottling()
 	Function double Workspace:GetRealPhysicsFPS()
 	Function bool Workspace:IsRegion3Empty(Region3 region, Instance ignoreDescendentsInstance = nil)
 	Function bool Workspace:IsRegion3EmptyWithIgnoreList(Region3 region, Objects ignoreDescendentsTable)
 	Function void Workspace:JoinToOutsiders(Objects objects, JointCreationMode jointType)
 	Function void Workspace:MakeJoints(Objects objects) [PluginSecurity]
+	Function bool Workspace:PGSIsEnabled()
+	Function void Workspace:SetPhysicsAnalyzerBreakOnIssue(bool enable) [PluginSecurity]
 	Function void Workspace:SetPhysicsThrottleEnabled(bool value) [LocalUserSecurity]
 	Function void Workspace:UnjoinFromOutsiders(Objects objects)
 	Function void Workspace:ZoomToExtents() [PluginSecurity]
 	Function Tuple Workspace:findPartOnRay(Ray ray, Instance ignoreDescendentsInstance = nil, bool terrainCellsAreCubes = false, bool ignoreWater = false) [deprecated]
 	Function Objects Workspace:findPartsInRegion3(Region3 region, Instance ignoreDescendentsInstance = nil, int maxParts = 20) [deprecated]
-Class Status : Model [notCreatable]
+	Event Workspace.PhysicsAnalyzerIssuesFound(int count) [PluginSecurity]
+Class Status : Model [deprecated] [notCreatable]
 Class Pages : Instance
 	Property bool Pages.IsFinished [readonly]
 	Function Array Pages:GetCurrentPage()
 	YieldFunction void Pages:AdvanceToNextPageAsync()
 Class DataStorePages : Pages
+Class FriendPages : Pages
 Class StandardPages : Pages
 Class PartOperationAsset : Instance
 Class ParticleEmitter : Instance
 	Property Vector3 ParticleEmitter.Acceleration
 	Property ColorSequence ParticleEmitter.Color
+	Property float ParticleEmitter.Drag
+	Property NormalId ParticleEmitter.EmissionDirection
 	Property bool ParticleEmitter.Enabled
 	Property NumberRange ParticleEmitter.Lifetime
 	Property float ParticleEmitter.LightEmission
+	Property bool ParticleEmitter.LockedToPart
 	Property float ParticleEmitter.Rate
 	Property NumberRange ParticleEmitter.RotSpeed
 	Property NumberRange ParticleEmitter.Rotation
@@ -1449,13 +1540,15 @@ Class ParticleEmitter : Instance
 	Property NumberRange ParticleEmitter.Speed
 	Property Content ParticleEmitter.Texture
 	Property NumberSequence ParticleEmitter.Transparency
+	Property float ParticleEmitter.VelocityInheritance
 	Property float ParticleEmitter.VelocitySpread
 	Property float ParticleEmitter.ZOffset
+	Function void ParticleEmitter:Emit(int particleCount = 16)
 Class Path : Instance
 	Property PathStatus Path.Status [readonly]
 	Function Array Path:GetPointCoordinates()
 	YieldFunction int Path:CheckOcclusionAsync(int start)
-Class PathfindingService : Instance
+Class PathfindingService : Instance [notCreatable]
 	Property float PathfindingService.EmptyCutoff
 	YieldFunction Instance PathfindingService:ComputeRawPathAsync(Vector3 start, Vector3 finish, float maxDistance)
 	YieldFunction Instance PathfindingService:ComputeSmoothPathAsync(Vector3 start, Vector3 finish, float maxDistance)
@@ -1487,12 +1580,14 @@ Class PhysicsSettings : Instance
 	Property bool PhysicsSettings.IsReceiveAgeShown
 	Property bool PhysicsSettings.IsTreeShown
 	Property bool PhysicsSettings.ParallelPhysics
+	Property bool PhysicsSettings.PhysicsAnalyzerEnabled [readonly] [PluginSecurity]
 	Property EnviromentalPhysicsThrottle PhysicsSettings.PhysicsEnvironmentalThrottle
 	Property bool PhysicsSettings.ShowDecompositionGeometry
 	Property double PhysicsSettings.ThrottleAdjustTime
 Class Player : Instance
 	Property int Player.AccountAge [readonly]
-	Property bool Player.AppearanceDidLoad [readonly] [RobloxScriptSecurity]
+	Property bool Player.AppearanceDidLoad [deprecated] [readonly] [RobloxScriptSecurity]
+	Property bool Player.AutoJumpEnabled
 	Property float Player.CameraMaxZoomDistance
 	Property float Player.CameraMinZoomDistance
 	Property CameraMode Player.CameraMode
@@ -1521,13 +1616,18 @@ Class Player : Instance
 	Property Object Player.RespawnLocation
 	Property float Player.SimulationRadius [LocalUserSecurity]
 	Property BrickColor Player.TeamColor
-	Property int Player.userId
+	Property bool Player.Teleported [hidden] [readonly] [RobloxScriptSecurity]
+	Property bool Player.TeleportedIn [RobloxScriptSecurity]
+	Property int Player.UserId
+	Property string Player.VRDevice [RobloxScriptSecurity]
+	Property int Player.userId [deprecated]
 	Function void Player:ClearCharacterAppearance()
 	Function float Player:DistanceFromCharacter(Vector3 point)
 	Function FriendStatus Player:GetFriendStatus(Instance player) [RobloxScriptSecurity]
 	Function string Player:GetGameSessionID() [RobloxSecurity]
 	Function Instance Player:GetMouse()
 	Function bool Player:GetUnder13() [RobloxScriptSecurity]
+	Function bool Player:HasAppearanceLoaded()
 	Function void Player:JumpCharacter() [RobloxScriptSecurity]
 	Function void Player:Kick(string message = )
 	Function bool Player:LoadBoolean(string key)
@@ -1560,11 +1660,11 @@ Class Player : Instance
 	Function void Player:saveInstance(string key, Instance value) [deprecated]
 	Function void Player:saveNumber(string key, double value) [deprecated]
 	Function void Player:saveString(string key, string value) [deprecated]
-	YieldFunction Dictionary Player:GetFriendsOnline(int maxFriends = 50)
+	YieldFunction Array Player:GetFriendsOnline(int maxFriends = 200)
 	YieldFunction int Player:GetRankInGroup(int groupId)
 	YieldFunction string Player:GetRoleInGroup(int groupId)
 	YieldFunction string Player:GetWebPersonalServerRank() [backend] [LocalUserSecurity]
-	YieldFunction bool Player:IsBestFriendsWith(int userId)
+	YieldFunction bool Player:IsBestFriendsWith(int userId) [deprecated]
 	YieldFunction bool Player:IsFriendsWith(int userId)
 	YieldFunction bool Player:IsInGroup(int groupId)
 	YieldFunction bool Player:SetWebPersonalServerRank(int rank) [WritePlayerSecurity]
@@ -1572,6 +1672,7 @@ Class Player : Instance
 	YieldFunction bool Player:isFriendsWith(int userId) [deprecated]
 	YieldFunction bool Player:waitForDataReady() [deprecated]
 	Event Player.CharacterAdded(Instance character)
+	Event Player.CharacterAppearanceLoaded(Instance character)
 	Event Player.CharacterRemoving(Instance character)
 	Event Player.Chatted(string message, Instance recipient)
 	Event Player.FriendStatusChanged(Instance player, FriendStatus friendStatus) [RobloxScriptSecurity]
@@ -1584,14 +1685,18 @@ Class Players : Instance
 	Property bool Players.CharacterAutoLoads
 	Property bool Players.ClassicChat [readonly]
 	Property Object Players.LocalPlayer [readonly]
-	Property int Players.MaxPlayers [RobloxSecurity]
+	Property int Players.MaxPlayers [readonly]
+	Property int Players.MaxPlayersInternal [LocalUserSecurity]
 	Property int Players.NumPlayers [readonly]
+	Property int Players.PreferredPlayers [readonly]
+	Property int Players.PreferredPlayersInternal [LocalUserSecurity]
 	Property Object Players.localPlayer [deprecated] [hidden] [readonly]
 	Property int Players.numPlayers [deprecated] [hidden] [readonly]
 	Function void Players:AddLeaderboardKey(string key) [LocalUserSecurity]
 	Function void Players:Chat(string message) [PluginSecurity]
-	Function Instance Players:CreateLocalPlayer(int userId) [PluginSecurity]
-	Function Instance Players:GetPlayerByID(int userID) [LocalUserSecurity]
+	Function Instance Players:CreateLocalPlayer(int userId, bool isTeleport = false) [PluginSecurity]
+	Function Instance Players:GetPlayerByID(int userID) [deprecated] [LocalUserSecurity]
+	Function Instance Players:GetPlayerById(int userId) [LocalUserSecurity]
 	Function Instance Players:GetPlayerByUserId(int userId)
 	Function Instance Players:GetPlayerFromCharacter(Instance character)
 	Function Objects Players:GetPlayers()
@@ -1613,6 +1718,8 @@ Class Players : Instance
 	Function Instance Players:playerFromCharacter(Instance character) [deprecated]
 	Function Objects Players:players() [deprecated]
 	YieldFunction string Players:BlockUser(int blockerUserId, int blockeeUserId) [RobloxScriptSecurity]
+	YieldFunction Instance Players:GetCharacterAppearanceAsync(int userId)
+	YieldFunction Instance Players:GetFriendsAsync(int userId)
 	YieldFunction string Players:GetNameFromUserIdAsync(int userId)
 	YieldFunction int Players:GetUserIdFromNameAsync(string userName)
 	YieldFunction string Players:UnblockUser(int exblockerUserId, int exblockeeUserId) [RobloxScriptSecurity]
@@ -1634,20 +1741,22 @@ Class Plugin : Instance
 	Function int Plugin:GetStudioUserId() [PluginSecurity]
 	Function Objects Plugin:Negate(Objects objects) [PluginSecurity]
 	Function void Plugin:OpenScript(Instance script, int lineNumber = 0) [PluginSecurity]
+	Function void Plugin:OpenWikiPage(string url) [PluginSecurity]
 	Function void Plugin:SaveSelectedToRoblox() [PluginSecurity]
 	Function Objects Plugin:Separate(Objects objects) [PluginSecurity]
 	Function void Plugin:SetSetting(string key, Variant value) [PluginSecurity]
 	Function Instance Plugin:Union(Objects objects) [PluginSecurity]
+	YieldFunction int Plugin:PromptForExistingAssetId(string assetType) [PluginSecurity]
 	Event Plugin.Deactivation() [PluginSecurity]
 Class PluginManager : Instance
 	Function Instance PluginManager:CreatePlugin() [PluginSecurity]
 	Function void PluginManager:ExportPlace(string filePath = ) [PluginSecurity]
 	Function void PluginManager:ExportSelection(string filePath = ) [PluginSecurity]
-Class PointsService : Instance
-	Function int PointsService:GetAwardablePoints()
+Class PointsService : Instance [notCreatable]
+	Function int PointsService:GetAwardablePoints() [deprecated]
 	YieldFunction Tuple PointsService:AwardPoints(int userId, int amount)
 	YieldFunction int PointsService:GetGamePointBalance(int userId)
-	YieldFunction int PointsService:GetPointBalance(int userId)
+	YieldFunction int PointsService:GetPointBalance(int userId) [deprecated]
 	Event PointsService.PointsAwarded(int userId, int pointsAwarded, int userBalanceInGame, int userTotalBalance)
 Class Pose : Instance
 	Property CoordinateFrame Pose.CFrame
@@ -1670,6 +1779,8 @@ Class ReflectionMetadataItem : Instance
 	Property bool ReflectionMetadataItem.Browsable
 	Property bool ReflectionMetadataItem.Deprecated
 	Property bool ReflectionMetadataItem.IsBackend
+	Property double ReflectionMetadataItem.UIMaximum
+	Property double ReflectionMetadataItem.UIMinimum
 	Property string ReflectionMetadataItem.summary
 Class ReflectionMetadataClass : ReflectionMetadataItem
 	Property int ReflectionMetadataClass.ExplorerImageIndex
@@ -1728,29 +1839,31 @@ Class RenderSettings : Instance [notbrowsable]
 	Property bool RenderSettings.ShowInterpolationpath
 	Property int RenderSettings.TextureCacheSize
 	Function int RenderSettings:GetMaxQualityLevel()
-Class ReplicatedFirst : Instance
+Class ReplicatedFirst : Instance [notCreatable]
 	Function bool ReplicatedFirst:IsDefaultLoadingGuiRemoved() [RobloxScriptSecurity]
 	Function bool ReplicatedFirst:IsFinishedReplicating() [RobloxScriptSecurity]
 	Function void ReplicatedFirst:RemoveDefaultLoadingScreen()
 	Event ReplicatedFirst.FinishedReplicating() [RobloxScriptSecurity]
 	Event ReplicatedFirst.RemoveDefaultLoadingGuiSignal() [RobloxScriptSecurity]
-Class ReplicatedStorage : Instance
+Class ReplicatedStorage : Instance [notCreatable]
 Class RobloxReplicatedStorage : Instance [notbrowsable] [notCreatable]
 Class RunService : Instance
 	Function void RunService:BindToRenderStep(string name, int priority, Function function)
+	Function bool RunService:IsClient()
+	Function bool RunService:IsRunMode()
 	Function bool RunService:IsRunning() [RobloxScriptSecurity]
+	Function bool RunService:IsServer()
+	Function bool RunService:IsStudio()
 	Function void RunService:Pause() [PluginSecurity]
 	Function void RunService:Reset() [deprecated] [PluginSecurity]
 	Function void RunService:Run() [PluginSecurity]
 	Function void RunService:Stop() [PluginSecurity]
 	Function void RunService:UnbindFromRenderStep(string name)
 	Event RunService.Heartbeat(double step)
-	Event RunService.RenderStepped()
+	Event RunService.RenderStepped(double step)
 	Event RunService.Stepped(double time, double step)
 Class RuntimeScriptService : Instance [notCreatable]
 Class ScriptContext : Instance [notCreatable]
-	Property int ScriptContext.GarbageCollectionFrequency [RobloxScriptSecurity]
-	Property int ScriptContext.GarbageCollectionLimit [RobloxScriptSecurity]
 	Property bool ScriptContext.ScriptsDisabled [LocalUserSecurity]
 	Function void ScriptContext:AddCoreScript(int assetId, Instance parent, string name) [RobloxScriptSecurity]
 	Function void ScriptContext:AddCoreScriptLocal(string name, Instance parent) [RobloxScriptSecurity]
@@ -1796,8 +1909,8 @@ Class Selection : Instance
 	Function Objects Selection:Get() [PluginSecurity]
 	Function void Selection:Set(Objects selection) [PluginSecurity]
 	Event Selection.SelectionChanged()
-Class ServerScriptService : Instance
-Class ServerStorage : Instance
+Class ServerScriptService : Instance [notCreatable]
+Class ServerStorage : Instance [notCreatable]
 Class ServiceProvider : Instance [notbrowsable]
 	Function Instance ServiceProvider:FindService(string className)
 	Function Instance ServiceProvider:GetService(string className)
@@ -1818,11 +1931,11 @@ Class DataModel : ServiceProvider
 	Property int DataModel.PlaceId [readonly]
 	Property int DataModel.PlaceVersion [readonly]
 	Property string DataModel.VIPServerId [readonly]
+	Property int DataModel.VIPServerOwnerId [readonly]
 	Property Object DataModel.Workspace [readonly]
 	Property Object DataModel.lighting [deprecated] [readonly]
 	Property Object DataModel.workspace [deprecated] [readonly]
 	Function void DataModel:AddStat(string displayName, string stat) [LocalUserSecurity]
-	Function void DataModel:ClearContent(bool resettingSimulation) [LocalUserSecurity]
 	Function void DataModel:ClearMessage() [LocalUserSecurity]
 	Function void DataModel:FinishShutdown(bool localSave) [RobloxScriptSecurity]
 	Function double DataModel:GetJobIntervalPeakFraction(string jobname, double greaterThan) [PluginSecurity]
@@ -1830,7 +1943,6 @@ Class DataModel : ServiceProvider
 	Function Array DataModel:GetJobsExtendedStats() [PluginSecurity]
 	Function Array DataModel:GetJobsInfo() [PluginSecurity]
 	Function string DataModel:GetMessage()
-	Function Objects DataModel:GetObjects(Content url) [PluginSecurity]
 	Function bool DataModel:GetRemoteBuildMode()
 	Function string DataModel:HttpGet(string url, bool synchronous = false) [RobloxScriptSecurity]
 	Function string DataModel:HttpPost(string url, string data, bool synchronous = false, string contentType = */*) [RobloxScriptSecurity]
@@ -1848,6 +1960,7 @@ Class DataModel : ServiceProvider
 	Function void DataModel:ServerSave() [LocalUserSecurity]
 	Function void DataModel:SetCreatorID(int creatorID, CreatorType creatorType) [deprecated] [PluginSecurity]
 	Function void DataModel:SetCreatorId(int creatorId, CreatorType creatorType) [PluginSecurity]
+	Function void DataModel:SetGameInstanceId(string instanceID) [PluginSecurity]
 	Function void DataModel:SetGearSettings(GearGenreSetting genreRestriction, int allowedGenres) [PluginSecurity]
 	Function void DataModel:SetGenre(Genre genre) [PluginSecurity]
 	Function void DataModel:SetJobsExtendedStatsWindow(double seconds) [LocalUserSecurity]
@@ -1861,10 +1974,10 @@ Class DataModel : ServiceProvider
 	Function void DataModel:SetServerSaveUrl(string url) [LocalUserSecurity]
 	Function void DataModel:SetUniverseId(int universeId) [PluginSecurity]
 	Function void DataModel:SetVIPServerId(string newId) [LocalUserSecurity]
+	Function void DataModel:SetVIPServerOwnerId(int newId) [LocalUserSecurity]
 	Function void DataModel:SetVideoInfo(string info) [LocalUserSecurity]
 	Function void DataModel:Shutdown() [LocalUserSecurity]
 	Function void DataModel:ToggleTools() [LocalUserSecurity]
-	Function Objects DataModel:get(Content url) [deprecated] [LocalUserSecurity]
 	YieldFunction string DataModel:HttpGetAsync(string url) [RobloxScriptSecurity]
 	YieldFunction string DataModel:HttpPostAsync(string url, string data, string contentType = */*) [RobloxScriptSecurity]
 	YieldFunction bool DataModel:SavePlace(SaveFilter saveFilter = SaveAll)
@@ -1907,11 +2020,18 @@ Class SocialService : Instance
 	Function void SocialService:SetPackageContentsUrl(string stuffUrl) [LocalUserSecurity]
 	Function void SocialService:SetStuffUrl(string stuffUrl) [LocalUserSecurity]
 Class Sound : Instance
+	Property int Sound.ChannelCount [hidden] [readonly]
+	Property bool Sound.IsLoaded [readonly]
 	Property bool Sound.IsPaused [readonly]
 	Property bool Sound.IsPlaying [readonly]
 	Property bool Sound.Looped
-	Property float Sound.Pitch
+	Property float Sound.MaxDistance
+	Property float Sound.MinDistance
+	Property float Sound.Pitch [deprecated]
 	Property bool Sound.PlayOnRemove
+	Property double Sound.PlaybackLoudness [readonly]
+	Property float Sound.PlaybackSpeed
+	Property bool Sound.Playing
 	Property Content Sound.SoundId
 	Property double Sound.TimeLength [readonly]
 	Property double Sound.TimePosition
@@ -1925,23 +2045,28 @@ Class Sound : Instance
 	Function void Sound:play() [deprecated]
 	Function void Sound:stop() [deprecated]
 	Event Sound.DidLoop(string soundId, int numOfTimesLooped)
+	Event Sound.Ended(string soundId)
+	Event Sound.Loaded(string soundId)
 	Event Sound.Paused(string soundId)
 	Event Sound.Played(string soundId)
+	Event Sound.Resumed(string soundId)
 	Event Sound.Stopped(string soundId)
 Class SoundService : Instance [notCreatable]
 	Property ReverbType SoundService.AmbientReverb
 	Property float SoundService.DistanceFactor
 	Property float SoundService.DopplerScale
 	Property float SoundService.RolloffScale
+	Function Tuple SoundService:GetListener()
 	Function void SoundService:PlayStockSound(SoundType sound) [RobloxScriptSecurity]
+	Function void SoundService:SetListener(ListenerType listenerType, Tuple listener)
 Class Sparkles : Instance
 	Property Color3 Sparkles.Color [hidden]
 	Property bool Sparkles.Enabled
 	Property Color3 Sparkles.SparkleColor
-Class SpatialQueryCache : Instance
 Class SpawnerService : Instance
 Class StarterGear : Instance
 Class StarterPlayer : Instance
+	Property bool StarterPlayer.AutoJumpEnabled
 	Property float StarterPlayer.CameraMaxZoomDistance
 	Property float StarterPlayer.CameraMinZoomDistance
 	Property CameraMode StarterPlayer.CameraMode
@@ -1952,8 +2077,10 @@ Class StarterPlayer : Instance
 	Property DevTouchMovementMode StarterPlayer.DevTouchMovementMode
 	Property bool StarterPlayer.EnableMouseLockOption
 	Property float StarterPlayer.HealthDisplayDistance
+	Property bool StarterPlayer.LoadCharacterAppearance
 	Property float StarterPlayer.NameDisplayDistance
 Class StarterPlayerScripts : Instance
+Class StarterCharacterScripts : StarterPlayerScripts
 Class Stats : Instance [notCreatable]
 	Property double Stats.MinReportInterval [RobloxScriptSecurity]
 	Property string Stats.ReporterType [RobloxScriptSecurity]
@@ -1999,20 +2126,28 @@ Class TaskScheduler : Instance
 	Function void TaskScheduler:SetThreadShare(double timeSlice, int numShare) [deprecated] [LocalUserSecurity]
 Class Team : Instance
 	Property bool Team.AutoAssignable
-	Property bool Team.AutoColorCharacters
-	Property int Team.Score
+	Property bool Team.AutoColorCharacters [deprecated]
+	Property int Team.Score [deprecated]
 	Property BrickColor Team.TeamColor
+	Function Objects Team:GetPlayers()
+	Event Team.PlayerAdded(Instance player)
+	Event Team.PlayerRemoved(Instance player)
 Class Teams : Instance [notCreatable]
 	Function Objects Teams:GetTeams()
-	Function void Teams:RebalanceTeams()
+	Function void Teams:RebalanceTeams() [deprecated]
 Class TeleportService : Instance
-	Property bool TeleportService.CustomizedTeleportUI
-	Function void TeleportService:Teleport(int placeId, Instance player = nil)
+	Property bool TeleportService.CustomizedTeleportUI [deprecated]
+	Function Variant TeleportService:GetLocalPlayerTeleportData()
+	Function Variant TeleportService:GetTeleportSetting(string setting)
+	Function void TeleportService:SetTeleportSetting(string setting, Variant value)
+	Function void TeleportService:Teleport(int placeId, Instance player = nil, Variant teleportData, Instance customLoadingScreen = nil)
 	Function void TeleportService:TeleportCancel() [RobloxScriptSecurity]
-	Function void TeleportService:TeleportImpl(int placeId, string spawnName) [RobloxScriptSecurity]
-	Function void TeleportService:TeleportToPlaceInstance(int placeId, string instanceId, Instance player = nil)
-	Function void TeleportService:TeleportToSpawnByName(int placeId, string spawnName, Instance player = nil)
+	Function void TeleportService:TeleportToPlaceInstance(int placeId, string instanceId, Instance player = nil, string spawnName = , Variant teleportData, Instance customLoadingScreen = nil)
+	Function void TeleportService:TeleportToPrivateServer(int placeId, string reservedServerAccessCode, Objects players, string spawnName = , Variant teleportData, Instance customLoadingScreen = nil)
+	Function void TeleportService:TeleportToSpawnByName(int placeId, string spawnName, Instance player = nil, Variant teleportData, Instance customLoadingScreen = nil)
 	YieldFunction Tuple TeleportService:GetPlayerPlaceInstanceAsync(int userId)
+	YieldFunction string TeleportService:ReserveServer(int placeId)
+	Event TeleportService.LocalPlayerArrivedFromTeleport(Instance loadingGui, Variant dataTable)
 	Callback bool TeleportService.ConfirmationCallback(string message, int placeId, string spawnName) [noyield] [RobloxScriptSecurity]
 	Callback void TeleportService.ErrorCallback(string message) [noyield] [RobloxScriptSecurity]
 Class TerrainRegion : Instance
@@ -2033,13 +2168,9 @@ Class TestService : Instance
 	Property int TestService.WarnCount [readonly]
 	Function void TestService:Check(bool condition, string description, Instance source = nil, int line = 0)
 	Function void TestService:Checkpoint(string text, Instance source = nil, int line = 0)
-	Function void TestService:DoCommand(string name) [LocalUserSecurity]
 	Function void TestService:Done()
 	Function void TestService:Error(string description, Instance source = nil, int line = 0)
 	Function void TestService:Fail(string description, Instance source = nil, int line = 0)
-	Function Array TestService:GetCommandNames() [LocalUserSecurity]
-	Function bool TestService:IsCommandChecked(string name) [LocalUserSecurity]
-	Function bool TestService:IsCommandEnabled(string name) [LocalUserSecurity]
 	Function void TestService:Message(string text, Instance source = nil, int line = 0)
 	Function void TestService:Require(bool condition, string description, Instance source = nil, int line = 0)
 	Function void TestService:Warn(bool condition, string description, Instance source = nil, int line = 0)
@@ -2047,9 +2178,11 @@ Class TestService : Instance
 	Event TestService.ServerCollectConditionalResult(bool condition, string text, Instance script, int line)
 	Event TestService.ServerCollectResult(string text, Instance script, int line)
 Class TextService : Instance [notCreatable]
+	Function Vector2 TextService:GetTextSize(string string, int fontSize, Font font, Vector2 frameSize) [RobloxScriptSecurity]
 Class TimerService : Instance [notCreatable]
 Class Toolbar : Instance
 	Function Instance Toolbar:CreateButton(string text, string tooltip, string iconname) [PluginSecurity]
+Class TouchInputService : Instance
 Class TouchTransmitter : Instance [notbrowsable] [notCreatable]
 Class TweenService : Instance
 Class UserGameSettings : Instance
@@ -2066,6 +2199,7 @@ Class UserGameSettings : Instance
 	Property SavedQualitySetting UserGameSettings.SavedQualityLevel
 	Property TouchCameraMovementMode UserGameSettings.TouchCameraMovementMode
 	Property TouchMovementMode UserGameSettings.TouchMovementMode
+	Property bool UserGameSettings.UsedHideHudShortcut [RobloxScriptSecurity]
 	Property UploadSetting UserGameSettings.VideoUploadPromptBehavior [RobloxScriptSecurity]
 	Function bool UserGameSettings:GetTutorialState(string tutorialId) [RobloxScriptSecurity]
 	Function bool UserGameSettings:InFullScreen()
@@ -2073,32 +2207,38 @@ Class UserGameSettings : Instance
 	Function void UserGameSettings:SetTutorialState(string tutorialId, bool value) [RobloxScriptSecurity]
 	Event UserGameSettings.FullscreenChanged(bool isFullscreen)
 	Event UserGameSettings.StudioModeChanged(bool isStudioMode)
-Class UserInputService : Instance
+Class UserInputService : Instance [notCreatable]
 	Property bool UserInputService.AccelerometerEnabled [readonly]
 	Property bool UserInputService.GamepadEnabled [readonly]
 	Property bool UserInputService.GyroscopeEnabled [readonly]
-	Property bool UserInputService.InCameraGesture [RobloxScriptSecurity]
+	Property bool UserInputService.IsVREnabled [deprecated] [readonly]
 	Property bool UserInputService.KeyboardEnabled [readonly]
 	Property bool UserInputService.ModalEnabled
 	Property MouseBehavior UserInputService.MouseBehavior
 	Property bool UserInputService.MouseEnabled [readonly]
 	Property bool UserInputService.MouseIconEnabled
-	Property bool UserInputService.OverrideMouseIconEnabled [RobloxScriptSecurity]
+	Property OverrideMouseIconBehavior UserInputService.OverrideMouseIconBehavior [RobloxScriptSecurity]
 	Property bool UserInputService.TouchEnabled [readonly]
+	Property CoordinateFrame UserInputService.UserHeadCFrame [deprecated] [readonly]
+	Property bool UserInputService.VREnabled [readonly]
 	Function bool UserInputService:GamepadSupports(UserInputType gamepadNum, KeyCode gamepadKeyCode)
+	Function Array UserInputService:GetConnectedGamepads()
 	Function Instance UserInputService:GetDeviceAcceleration()
 	Function Instance UserInputService:GetDeviceGravity()
 	Function Tuple UserInputService:GetDeviceRotation()
+	Function Instance UserInputService:GetFocusedTextBox()
 	Function bool UserInputService:GetGamepadConnected(UserInputType gamepadNum)
 	Function Array UserInputService:GetGamepadState(UserInputType gamepadNum)
 	Function Array UserInputService:GetKeysPressed()
+	Function UserInputType UserInputService:GetLastInputType()
+	Function Array UserInputService:GetNavigationGamepads()
 	Function Platform UserInputService:GetPlatform() [RobloxScriptSecurity]
 	Function Array UserInputService:GetSupportedGamepadKeyCodes(UserInputType gamepadNum)
+	Function CoordinateFrame UserInputService:GetUserCFrame(UserCFrame type)
 	Function bool UserInputService:IsKeyDown(KeyCode keyCode)
-	Function bool UserInputService:IsLuaTouchControls() [RobloxScriptSecurity]
-	Function bool UserInputService:IsStudioTouchEmulationEnabled() [RobloxScriptSecurity]
-	Function void UserInputService:RotateCamera(Vector2 positionDelta) [RobloxScriptSecurity]
-	Function void UserInputService:ZoomCamera(float zoomDelta) [RobloxScriptSecurity]
+	Function bool UserInputService:IsNavigationGamepad(UserInputType gamepadEnum)
+	Function void UserInputService:RecenterUserHeadCFrame()
+	Function void UserInputService:SetNavigationGamepad(UserInputType gamepadEnum, bool enabled)
 	Event UserInputService.DeviceAccelerationChanged(Instance acceleration)
 	Event UserInputService.DeviceGravityChanged(Instance gravity)
 	Event UserInputService.DeviceRotationChanged(Instance rotation, CoordinateFrame cframe)
@@ -2108,7 +2248,7 @@ Class UserInputService : Instance
 	Event UserInputService.InputChanged(Instance input, bool gameProcessedEvent)
 	Event UserInputService.InputEnded(Instance input, bool gameProcessedEvent)
 	Event UserInputService.JumpRequest()
-	Event UserInputService.ProcessedEvent(Instance inputObject, bool processed) [RobloxScriptSecurity]
+	Event UserInputService.LastInputTypeChanged(UserInputType lastInputType)
 	Event UserInputService.TextBoxFocusReleased(Instance textboxReleased)
 	Event UserInputService.TextBoxFocused(Instance textboxFocused)
 	Event UserInputService.TouchEnded(Instance touch, bool gameProcessedEvent)
@@ -2120,13 +2260,14 @@ Class UserInputService : Instance
 	Event UserInputService.TouchStarted(Instance touch, bool gameProcessedEvent)
 	Event UserInputService.TouchSwipe(SwipeDirection swipeDirection, int numberOfTouches, bool gameProcessedEvent)
 	Event UserInputService.TouchTap(Array touchPositions, bool gameProcessedEvent)
+	Event UserInputService.UserCFrameChanged(UserCFrame type, CoordinateFrame value)
 	Event UserInputService.WindowFocusReleased()
 	Event UserInputService.WindowFocused()
 Class Vector3Value : Instance
 	Property Vector3 Vector3Value.Value
 	Event Vector3Value.Changed(Vector3 value)
 	Event Vector3Value.changed(Vector3 value) [deprecated]
-Class VirtualUser : Instance
+Class VirtualUser : Instance [notCreatable]
 	Function void VirtualUser:Button1Down(Vector2 position, CoordinateFrame camera = Identity) [LocalUserSecurity]
 	Function void VirtualUser:Button1Up(Vector2 position, CoordinateFrame camera = Identity) [LocalUserSecurity]
 	Function void VirtualUser:Button2Down(Vector2 position, CoordinateFrame camera = Identity) [LocalUserSecurity]
@@ -2255,6 +2396,10 @@ Enum ChatStyle
 	EnumItem ChatStyle.Classic : 0
 	EnumItem ChatStyle.Bubble : 1
 	EnumItem ChatStyle.ClassicAndBubble : 2
+Enum CollisionFidelity
+	EnumItem CollisionFidelity.Default : 0
+	EnumItem CollisionFidelity.Hull : 1
+	EnumItem CollisionFidelity.Box : 2
 Enum ComputerCameraMovementMode
 	EnumItem ComputerCameraMovementMode.Default : 0
 	EnumItem ComputerCameraMovementMode.Follow : 2
@@ -2357,6 +2502,8 @@ Enum Font
 	EnumItem Font.ArialBold : 2
 	EnumItem Font.SourceSans : 3
 	EnumItem Font.SourceSansBold : 4
+	EnumItem Font.SourceSansLight : 5
+	EnumItem Font.SourceSansItalic : 6
 Enum FontSize
 	EnumItem FontSize.Size8 : 0
 	EnumItem FontSize.Size9 : 1
@@ -2368,6 +2515,11 @@ Enum FontSize
 	EnumItem FontSize.Size24 : 7
 	EnumItem FontSize.Size36 : 8
 	EnumItem FontSize.Size48 : 9
+	EnumItem FontSize.Size28 : 10
+	EnumItem FontSize.Size32 : 11
+	EnumItem FontSize.Size42 : 12
+	EnumItem FontSize.Size60 : 13
+	EnumItem FontSize.Size96 : 14
 Enum FormFactor
 	EnumItem FormFactor.Symmetric : 0
 	EnumItem FormFactor.Brick : 1
@@ -2447,6 +2599,9 @@ Enum HumanoidDisplayDistanceType
 	EnumItem HumanoidDisplayDistanceType.Viewer : 0
 	EnumItem HumanoidDisplayDistanceType.Subject : 1
 	EnumItem HumanoidDisplayDistanceType.None : 2
+Enum HumanoidRigType
+	EnumItem HumanoidRigType.R6 : 0
+	EnumItem HumanoidRigType.R15 : 1
 Enum HumanoidStateType
 	EnumItem HumanoidStateType.FallingDown : 0
 	EnumItem HumanoidStateType.Running : 8
@@ -2764,6 +2919,11 @@ Enum LevelOfDetailSetting
 	EnumItem LevelOfDetailSetting.High : 2
 	EnumItem LevelOfDetailSetting.Medium : 1
 	EnumItem LevelOfDetailSetting.Low : 0
+Enum ListenerType
+	EnumItem ListenerType.Camera : 0
+	EnumItem ListenerType.CFrame : 1
+	EnumItem ListenerType.ObjectPosition : 2
+	EnumItem ListenerType.ObjectCFrame : 3
 Enum Material
 	EnumItem Material.Plastic : 256
 	EnumItem Material.Wood : 512
@@ -2832,6 +2992,9 @@ Enum NameOcclusion
 	EnumItem NameOcclusion.OccludeAll : 2
 	EnumItem NameOcclusion.EnemyOcclusion : 1
 	EnumItem NameOcclusion.NoOcclusion : 0
+Enum NetworkOwnership
+	EnumItem NetworkOwnership.Automatic : 0
+	EnumItem NetworkOwnership.Manual : 1
 Enum NormalId
 	EnumItem NormalId.Top : 1
 	EnumItem NormalId.Bottom : 4
@@ -2839,6 +3002,10 @@ Enum NormalId
 	EnumItem NormalId.Front : 5
 	EnumItem NormalId.Right : 0
 	EnumItem NormalId.Left : 3
+Enum OverrideMouseIconBehavior
+	EnumItem OverrideMouseIconBehavior.None : 0
+	EnumItem OverrideMouseIconBehavior.ForceShow : 1
+	EnumItem OverrideMouseIconBehavior.ForceHide : 2
 Enum PacketPriority
 	EnumItem PacketPriority.IMMEDIATE_PRIORITY : 0
 	EnumItem PacketPriority.HIGH_PRIORITY : 1
@@ -2860,6 +3027,10 @@ Enum PathStatus
 	EnumItem PathStatus.ClosestOutOfRange : 2
 	EnumItem PathStatus.FailStartNotEmpty : 3
 	EnumItem PathStatus.FailFinishNotEmpty : 4
+Enum PhysicalPropertiesMode
+	EnumItem PhysicalPropertiesMode.Default : 1
+	EnumItem PhysicalPropertiesMode.Legacy : 0
+	EnumItem PhysicalPropertiesMode.New : 2
 Enum PhysicsReceiveMethod
 	EnumItem PhysicsReceiveMethod.Direct : 0
 	EnumItem PhysicsReceiveMethod.Interpolation : 1
@@ -2887,7 +3058,8 @@ Enum Platform
 	EnumItem Platform.WebOS : 15
 	EnumItem Platform.DOS : 16
 	EnumItem Platform.BeOS : 17
-	EnumItem Platform.None : 18
+	EnumItem Platform.UWP : 18
+	EnumItem Platform.None : 19
 Enum PlayerActions
 	EnumItem PlayerActions.CharacterForward : 0
 	EnumItem PlayerActions.CharacterBackward : 1
@@ -2898,6 +3070,16 @@ Enum PlayerChatType
 	EnumItem PlayerChatType.All : 0
 	EnumItem PlayerChatType.Team : 1
 	EnumItem PlayerChatType.Whisper : 2
+Enum PoseEasingDirection
+	EnumItem PoseEasingDirection.Out : 1
+	EnumItem PoseEasingDirection.InOut : 2
+	EnumItem PoseEasingDirection.In : 0
+Enum PoseEasingStyle
+	EnumItem PoseEasingStyle.Linear : 0
+	EnumItem PoseEasingStyle.Constant : 1
+	EnumItem PoseEasingStyle.Elastic : 2
+	EnumItem PoseEasingStyle.Cubic : 3
+	EnumItem PoseEasingStyle.Bounce : 4
 Enum PriorityMethod
 	EnumItem PriorityMethod.LastError : 0
 	EnumItem PriorityMethod.AccumulatedError : 1
@@ -3000,6 +3182,9 @@ Enum ReverbType
 	EnumItem ReverbType.ParkingLot : 21
 	EnumItem ReverbType.SewerPipe : 22
 	EnumItem ReverbType.UnderWater : 23
+Enum RollOffMode
+	EnumItem RollOffMode.Inverse : 0
+	EnumItem RollOffMode.Linear : 1
 Enum RotationType
 	EnumItem RotationType.MovementRelative : 0
 	EnumItem RotationType.CameraRelative : 1
@@ -3058,8 +3243,8 @@ Enum SpecialKey
 	EnumItem SpecialKey.PageDown : 4
 	EnumItem SpecialKey.ChatHotkey : 5
 Enum Status
-	EnumItem Status.Poison : 0
-	EnumItem Status.Confusion : 1
+	EnumItem Status.Poison : 0 [deprecated]
+	EnumItem Status.Confusion : 1 [deprecated]
 Enum Stuff
 	EnumItem Stuff.Heads : 0
 	EnumItem Stuff.Faces : 1
@@ -3108,6 +3293,10 @@ Enum TeleportState
 	EnumItem TeleportState.WaitingForServer : 2
 	EnumItem TeleportState.Failed : 3
 	EnumItem TeleportState.InProgress : 4
+Enum TeleportType
+	EnumItem TeleportType.ToPlace : 0
+	EnumItem TeleportType.ToInstance : 1
+	EnumItem TeleportType.ToReservedServer : 2
 Enum TextXAlignment
 	EnumItem TextXAlignment.Left : 0
 	EnumItem TextXAlignment.Center : 2
@@ -3160,6 +3349,10 @@ Enum UploadSetting
 	EnumItem UploadSetting.Never : 0
 	EnumItem UploadSetting.Ask : 1
 	EnumItem UploadSetting.Always : 2
+Enum UserCFrame
+	EnumItem UserCFrame.Head : 0
+	EnumItem UserCFrame.LeftHand : 1
+	EnumItem UserCFrame.RightHand : 2
 Enum UserInputState
 	EnumItem UserInputState.Begin : 0
 	EnumItem UserInputState.Change : 1
@@ -3181,7 +3374,17 @@ Enum UserInputType
 	EnumItem UserInputType.Gamepad2 : 13
 	EnumItem UserInputType.Gamepad3 : 14
 	EnumItem UserInputType.Gamepad4 : 15
-	EnumItem UserInputType.None : 16
+	EnumItem UserInputType.Gamepad5 : 16
+	EnumItem UserInputType.Gamepad6 : 17
+	EnumItem UserInputType.Gamepad7 : 18
+	EnumItem UserInputType.Gamepad8 : 19
+	EnumItem UserInputType.TextInput : 20
+	EnumItem UserInputType.None : 21
+Enum VibrationMotor
+	EnumItem VibrationMotor.Large : 0
+	EnumItem VibrationMotor.Small : 1
+	EnumItem VibrationMotor.LeftTrigger : 2
+	EnumItem VibrationMotor.RightTrigger : 3
 Enum VideoQualitySettings
 	EnumItem VideoQualitySettings.LowResolution : 0
 	EnumItem VideoQualitySettings.MediumResolution : 1
